@@ -9,10 +9,9 @@ Why
 ---
 Draft-token acceptance varies substantially by request shape: structured output
 often accepts a longer prefix than free-form prose, while every extra verified
-position touches more experts. A single fixed length therefore trades throughput
-between workloads. This scheduler makes the verification length a property of the
-request and keeps the engine's fused draft pass unchanged. The public design and
-current results are in docs/production-recipe.md and docs/bench.md.
+position touches more experts. This scheduler makes the verification length a
+property of the request and keeps the engine's fused draft pass unchanged. The public
+design is in docs/production-recipe.md.
 
 How (design summary in docs/production-recipe.md)
 -------------------------------------------------

@@ -18,10 +18,8 @@ The four-node FP8 lane descends from
 [Wpnx330/GLM-5.3-Flash-FP8-4x-DGX-Spark](https://github.com/Wpnx330/GLM-5.3-Flash-FP8-4x-DGX-Spark).
 The switchless architecture and presentation were also informed by
 [Alex Ellis's four-node recipe](https://github.com/alexellis/glm-5.3-flash-4x-dgx-spark-switchless).
-[MiaAI-Lab](https://github.com/MiaAI-Lab/GLM-5.3-Flash-EXL3-2x-DGX-Sparks)
-informed the comparison protocol, and [jspark3](https://github.com/jakejharris/jspark3)
-informed acceptance instrumentation. The benchmark harness here is an independent
-implementation.
+[jspark3](https://github.com/jakejharris/jspark3) informed the retained functional
+acceptance instrumentation.
 
 CUDA, cuDNN, NVIDIA drivers and tools, PyTorch, Triton, Docker, and other host or
 container dependencies are invoked rather than redistributed and retain their own

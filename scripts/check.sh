@@ -7,9 +7,7 @@ export PYTHONDONTWRITEBYTECODE=1
 
 public_path() {
   case "$1" in
-    ./.git/*|./.claude/*|./bench-results/*|./experiments/*|./reports/*|./todo/*|\
-    ./scripts/node/moe-tune/*|./scripts/node/nccl-bench/*|./scripts/node/host/nsys-entry.sh|\
-    ./scripts/prof-capture.sh|./scripts/nccl-bench.sh|./scripts/mirror-snapshot.sh|\
+    ./.git/*|./.claude/*|./scripts/mirror-snapshot.sh|\
     ./scripts/mirror-allow.txt|./scripts/mirror-private-terms.example)
       return 1 ;;
     *) return 0 ;;
@@ -26,13 +24,6 @@ required=(
   scripts/fetch-fp8-weights.sh
   scripts/render-netplan.sh
   scripts/verify-node.sh
-  scripts/bench/run_ab.sh
-  scripts/bench/bench_decode.py
-  scripts/bench/bench_prefill.py
-  scripts/bench/bench_longctx.py
-  scripts/bench/compare.py
-  scripts/bench/perf-table.py
-  scripts/bench/thermal-snapshot.sh
   scripts/node/flusher-unconditional.sh
   scripts/node/sparse_attn_indexer_kpool_sm121.py
   scripts/node/host/tp4-gpu-clocks.sh
@@ -78,7 +69,7 @@ scripts/node/nccl/install-nccl.sh --help >/dev/null
 echo "command-help: PASS"
 
 doc_count=$(find docs -type f -name '*.md' | wc -l | tr -d ' ')
-[ "$doc_count" = 5 ] || { echo "check: docs/ must contain exactly 5 Markdown files (got $doc_count)" >&2; exit 1; }
+[ "$doc_count" = 4 ] || { echo "check: docs/ must contain exactly 4 Markdown files (got $doc_count)" >&2; exit 1; }
 
 ./scripts/tests/test-agent-preflight.sh
 ./scripts/tests/test-host-lifecycle.sh

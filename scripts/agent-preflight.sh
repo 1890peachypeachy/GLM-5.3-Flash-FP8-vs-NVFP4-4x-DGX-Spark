@@ -339,7 +339,7 @@ report = {
     "schema_version": "1.0.0", "result": result, "profile": profile, "nodes": nodes,
     "proposed_config": config, "warnings": warnings, "blockers": incomplete + blockers,
     "approvals_required": ["bootstrap_and_downloads", "host_network_and_rolling_reboots",
-                           "serving_and_api_exposure", "benchmark_and_promotion"],
+                           "serving_and_api_exposure", "recipe_promotion"],
 }
 with open(destination, "w", encoding="utf-8") as handle:
     json.dump(report, handle, indent=2, sort_keys=True)

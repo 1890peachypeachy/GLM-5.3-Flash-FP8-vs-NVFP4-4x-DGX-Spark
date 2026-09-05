@@ -2,15 +2,14 @@
 
 Use this guide for an existing cluster: handoff, read-only status, deployment,
 lifecycle, recovery, rollback, and promotion. Installation and artifact downloads are
-in [`install-from-zero.md`](install-from-zero.md); measurement details are in
-[`bench.md`](bench.md).
+in [`install-from-zero.md`](install-from-zero.md).
 
 ## Authorization boundary
 
 Authorization is scoped to named targets, actions, and a maintenance window. Continue
 through all actions already authorized for the same window. Ask before expanding that
 scope to privileged bootstrap/downloads, host network or reboot changes, deploy or
-service lifecycle, benchmark/promotion, deletion, or publication. Commits, pushes,
+service lifecycle, recipe promotion, deletion, or publication. Commits, pushes,
 tags, pull requests, releases, and weight purges require an explicit request.
 
 Read-only inspection may proceed when the owner has already placed the four targets
@@ -25,7 +24,7 @@ the requested recipe.
 
 Before touching a node, establish:
 
-1. whether the task is installation, operation, recovery, benchmark, or local-only work;
+1. whether the task is installation, operation, recovery, or local-only work;
 2. the four SSH targets in rank order and the deployment account;
 3. the human-confirmed ring cable map and allowed private subnets;
 4. that the API remains on a trusted LAN/VPN and use is compatible with the DFlash2
@@ -96,6 +95,48 @@ unreachable rank, or health mismatch. `/v1/models` is never a readiness check.
 `tp4ctl status` exits nonzero unless it can verify the configured container running on
 all four ranks and receive `/health` 200.
 
+## Post-boot functional gates
+
+Run both gates within two minutes of `/health` reaching 200 after any changed boot.
+They verify response and tool-call behavior.
+
+### Coherent response and thinking-off behavior
+
+```sh
+curl -s http://<MGMT_IP_RANK0>:8000/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model":"glm-5.3-flash",
+    "temperature":0,
+    "max_tokens":64,
+    "chat_template_kwargs":{"enable_thinking":false},
+    "messages":[{"role":"user","content":"What is the capital of Italy? Reply with one sentence."}]
+  }' | python3 -m json.tool
+```
+
+Pass: normal response content is present and coherently names Rome. The local template
+adapter closes an empty `<think></think>` block for this request flag; see
+[`production-recipe.md`](production-recipe.md). This is local compatibility behavior,
+not an official reasoning mode.
+
+### Structured tool call
+
+```sh
+curl -s http://<MGMT_IP_RANK0>:8000/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model":"glm-5.3-flash",
+    "max_tokens":256,
+    "messages":[{"role":"user","content":"What is the weather in Milan?"}],
+    "tools":[{"type":"function","function":{"name":"get_weather","description":"Get weather for a city","parameters":{"type":"object","properties":{"city":{"type":"string"}},"required":["city"]}}}],
+    "tool_choice":"auto"
+  }' | python3 -m json.tool
+```
+
+Pass: `choices[0].message.tool_calls[0].function.name` is `get_weather` and its
+arguments are valid JSON containing Milan. If either gate fails, take the full stack
+down and report the failure; never repair or restart one serving rank in isolation.
+
 ## Deploy a repository or recipe change
 
 Prerequisites: inspect the current status; identify one rollback; update the real
@@ -121,9 +162,9 @@ the string while `--scheduler-cls adaptive_k_scheduler.AdaptiveKScheduler` remai
 `EXTRA_VLLM_ARGS`.
 
 Expected: every copied file matches its source, all ranks launch in order 3→2→1→0,
-`/health` reaches 200, and the four signatures return. Run the sanity/tool-call gate in
-[`bench.md`](bench.md) within two minutes, followed by any task-specific acceptance.
-Stop the stack immediately if a gate fails.
+`/health` reaches 200, and the four signatures return. Run the
+[post-boot functional gates](#post-boot-functional-gates) within two minutes, followed
+by any task-specific verification. Stop the stack immediately if a gate fails.
 
 ## Start, stop, restart, logs, and power
 
@@ -150,7 +191,7 @@ flusher is successful. `restart` and `poweroff` stop before starting or powering
 anything when that verification is incomplete. `poweroff` asks interactively and leaves
 rank 0 until last.
 
-Expected after `up`: readiness and all gates. Expected after `down`: no matching
+Expected after `up`: readiness and both functional gates. Expected after `down`: no matching
 container or flusher on any rank. Stop and report partial teardown or launch; do not
 repair only the failed node.
 
@@ -201,12 +242,10 @@ space without a fresh disk census and explicit owner decision.
 
 ## Keep an accepted change
 
-A performance change is accepted only after two clean same-window passes outside the
-noise band and an owner decision. Persist the value and rollback in its source file,
-update any affected runtime signature, update the public baseline in `README.md` and
-the method and context limits in `docs/bench.md`, update `CHANGELOG.md`, and run
-`./scripts/check.sh`.
+After the owner accepts a recipe change, persist the value and rollback in its source
+file, update any affected runtime signature and `CHANGELOG.md`, and run
+`./scripts/check.sh`. Evaluation tooling and result records remain outside this
+repository.
 
-Record raw evidence only in the owner's private ignored result area. Do not expose
-node addresses, paths, or logs in public documents. A commit, tag, release, or public
-announcement remains a separate explicit action.
+Do not expose node addresses, private paths, or logs in public documents. A commit,
+tag, release, or public announcement remains a separate explicit action.

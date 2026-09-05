@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Switch the SMMU between translated and passthrough (identity) mode (A/B knob H3).
+# Switch the SMMU between translated and passthrough (identity) mode.
 #
 # WHAT IT DOES. The knob itself is the grub drop-in /etc/default/grub.d/zz-tp4-perf.cfg
 # (`GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX iommu.passthrough=1"`), pushed to the nodes by

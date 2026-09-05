@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# common.sh — helpers shared by the WORKSTATION-side scripts of this repo: scripts/*.sh,
-# scripts/bench/*.sh and scripts/node/nccl/*.sh. It is SOURCED, never executed.
+# common.sh — helpers shared by the workstation-side shell scripts in this repository.
+# It is sourced, never executed.
 #
 # Most node-side runtime files stay self-contained. The operator-run
 # fetch-fp8-weights.sh is the exception: deploy.sh installs it together with this library

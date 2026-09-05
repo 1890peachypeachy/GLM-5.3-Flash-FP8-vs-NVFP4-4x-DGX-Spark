@@ -18,18 +18,7 @@ scripts/node/ssh-config
 scripts/mirror-private-terms.txt
 .claude/
 
-# Internal experiment records and reports stay local and must never enter a public mirror.
-/bench-results/
-/reports/
-/experiments/
-/todo/
-
-# Operator-only tools retained locally but excluded from the public repository.
-/scripts/prof-capture.sh
-/scripts/nccl-bench.sh
-/scripts/node/moe-tune/
-/scripts/node/nccl-bench/
-/scripts/node/host/nsys-entry.sh
+# Local mirror tooling stays outside the public repository.
 /scripts/mirror-snapshot.sh
 /scripts/mirror-allow.txt
 /scripts/mirror-private-terms.example

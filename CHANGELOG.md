@@ -59,6 +59,9 @@ release.
 
 ### Removed
 
+- Removed the repository benchmark harness, published performance results, and
+  benchmark-only deployment and validation hooks; post-boot functional gates now live
+  in the operations guide.
 - Removed historical studies, raw experiment indexes, internal tuning tools, mirror
   tooling, and the outdated performance graphic from the public repository surface;
   local copies remain available outside the published file set.

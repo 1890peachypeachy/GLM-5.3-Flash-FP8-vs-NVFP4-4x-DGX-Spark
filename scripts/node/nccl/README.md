@@ -115,10 +115,10 @@ expected to report only the NCCL checksum difference between that candidate and 
 recorded production hash. Any other `FAIL`, any mixed hash, or any fabric failure stops
 the procedure. Do not loosen the verifier or change `SHA256SUMS` to make this phase pass.
 
-Within the same authorized full-stack window, start once, run the post-boot gates in
-[`docs/bench.md`](../../../docs/bench.md), and run a representative decode measurement from
-that guide. A candidate is accepted only if the engine initializes on all four ranks,
-the gates pass, and the measurement meets the agreed criterion.
+Within the same authorized full-stack window, start once and run the
+[post-boot functional gates](../../../docs/operations.md#post-boot-functional-gates).
+A candidate is accepted only if the engine initializes on all four ranks, the gates
+pass, and the owner accepts the result.
 
 After acceptance, replace the single hash in `scripts/node/nccl/SHA256SUMS` with
 `candidate_sha`, record the change in `CHANGELOG.md`, and rerun:
@@ -131,7 +131,7 @@ Expected: the verifier is fully green. Record matching shape changes in `expecte
 when applicable. The duplicate NCCL-runtime warning emitted by `deep_ep` is expected
 when the preloaded library coexists with the image-linked copy.
 
-If initialization, a gate, or the measurement fails, run `./scripts/tp4ctl down`. On an
+If initialization or a gate fails, run `./scripts/tp4ctl down`. On an
 existing cluster, restore `libnccl.so.2.rollback` atomically on all four ranks, prove
 that every restored hash equals the still-recorded production checksum, and only then
 start the previous stack. If there was no prior library, leave the cluster down and

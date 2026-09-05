@@ -247,8 +247,9 @@ Starting and exposing the endpoint needs a separate serving-window approval:
 
 Expected: static verification passes; fabric-check sees two addressed MTU-9000 ports
 per node and eight successful jumbo pings; `/health` reaches 200; all four runtime
-signatures in [`operations.md`](operations.md) are present. Run the sanity and tool-call
-gates in [`bench.md`](bench.md) within two minutes of readiness.
+signatures in [`operations.md`](operations.md) are present. Run the
+[post-boot functional gates](operations.md#post-boot-functional-gates) within two
+minutes of readiness.
 
 If status or the rank-0 unit shows that autostart is already loading, wait for that
 attempt and skip `up`. If it is already serving, proceed directly to live verification

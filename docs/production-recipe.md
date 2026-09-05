@@ -14,7 +14,7 @@ in `scripts/node/model-manifests/`, and NCCL pins in `scripts/node/nccl/`.
 | Serving engine | pinned SM121 vLLM container referenced by `IMAGE` | rank 0 exposes the OpenAI-compatible API; ranks 1–3 are headless |
 | Target model | pinned `zai-org/GLM-5.3-Flash` FP8 snapshot | immutable file list and hashes under `scripts/node/model-manifests/` |
 | Drafter | pinned `incoai/GLM-5.3-Flash-DFlash2` | fused speculative draft; non-commercial upstream terms apply |
-| Expert kernels | vLLM Triton FP8 MoE with the GB10-tuned JSON in `scripts/node/moe-configs/` | improves the verified single-stream and structured paths |
+| Expert kernels | vLLM Triton FP8 MoE with the GB10-specific JSON in `scripts/node/moe-configs/` | loads the selected platform configuration for the Triton backend |
 | Speculation policy | `scripts/node/patches/adaptive_k_scheduler.py` | adjusts verification length per request from its own acceptance history |
 | Sparse attention | `scripts/node/sparse_attn_indexer_kpool_sm121.py` | SM121 K-pool compatibility patch bind-mounted over the image module |
 | Host tier | pinned kernel/packages and `iommu.passthrough=1` | verified host baseline; owned by `scripts/node/bootstrap/` and `scripts/node/host/` |
@@ -91,20 +91,14 @@ historical runs as thinking-off unless the generated request and response prove 
 
 ## Why these customizations remain
 
-- FP8 is the selected lane because it preserved long-context retrieval on the verified
-  campaign while fitting the four-node target.
+- FP8 is the selected lane because it fits the model and configured context on the
+  four-node target.
 - DFlash2 drafts a block in one pass, avoiding sequential MTP draft steps on this engine.
-- Triton FP8 MoE and the tuned small-batch JSON improved the workloads this cluster
-  serves without changing the model weights.
-- Adaptive verification responds to the large acceptance difference between structured
-  and prose requests.
-- IOMMU passthrough improved multi-rank decode on the verified hosts.
+- Triton FP8 MoE uses the versioned GB10 configuration without changing model weights.
+- Adaptive verification selects the low or high length from each request's own history.
+- IOMMU passthrough is pinned and checked as part of the host baseline.
 - Patched NCCL is structural: the uncabled diagonals make the stock tree connection
   plan unsuitable for this topology.
-
-The public aggregate and its limits are in [`bench.md`](bench.md). Historical sweeps,
-external comparisons, rejected variants, and raw evidence remain outside the public
-documentation because they are not the current production recipe.
 
 ## Security and licensing boundary
 

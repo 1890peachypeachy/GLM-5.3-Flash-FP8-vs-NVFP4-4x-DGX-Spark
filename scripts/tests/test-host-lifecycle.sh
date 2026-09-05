@@ -166,16 +166,17 @@ grep -q -- '--status is read-only and requires --no-push' "$TMPD/status-write.ou
 [ ! -s "$SSH_LOG" ]
 [ ! -s "$SCP_LOG" ]
 
-# A local publication scanner is optional and must not be required by the public tests.
+# The optional local mirror scanner still rejects generic private material without
+# becoming a dependency of the public test suite.
 if [ -x "$REPO/scripts/mirror-snapshot.sh" ]; then
-  mkdir -p "$TMPD/private-scan/bench-results"
-  printf 'private notes\n' >"$TMPD/private-scan/bench-results/note.txt"
+  mkdir -p "$TMPD/private-scan"
+  printf -- '-----BEGIN %s %s-----\n' PRIVATE KEY >"$TMPD/private-scan/note.txt"
   code=0
   "$REPO/scripts/mirror-snapshot.sh" --scan-static "$TMPD/private-scan" \
     >"$TMPD/private-scan.out" 2>&1 || code=$?
   [ "$code" = 1 ]
-  grep -q 'private document tree' "$TMPD/private-scan.out"
-  grep -q 'bench-results' "$TMPD/private-scan.out"
+  grep -q 'key material' "$TMPD/private-scan.out"
+  grep -q 'note.txt' "$TMPD/private-scan.out"
 fi
 
 echo "test-host-lifecycle: PASS"

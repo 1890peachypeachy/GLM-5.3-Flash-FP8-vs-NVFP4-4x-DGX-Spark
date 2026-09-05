@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Lock the GPU SM clock to its maximum (A/B knob for the prefill hypothesis).
+# Temporarily lock the GPU SM clock to its maximum for host diagnostics.
 #
 # WHAT IT DOES. --apply locks the graphics clock to `clocks.max.sm` as read from the
 # driver (never a hardcoded MHz) with `nvidia-smi -lgc <max>,<max>`, then RE-READS the
@@ -17,12 +17,12 @@
 #
 # IT DOES NOT SURVIVE A REBOOT, ON PURPOSE. No systemd unit is installed here: after a
 # reboot the GPU is back to its stock clock policy (a marker carrying a stale boot_id is
-# reported and discarded). Promoting this knob to a persistent oneshot unit is a separate,
-# owner-decided step that happens only after an A/B verdict.
+# reported and discarded). Making this setting persistent is a separate, owner-decided
+# recipe change.
 #
 # NEVER COMBINE WITH POWER-LIMIT CHANGES. This script touches clocks and nothing else;
-# GB10 exposes no settable power limit anyway, and mixing the two would make any A/B
-# result unattributable.
+# GB10 exposes no settable power limit anyway. Keep host changes narrow so status and
+# rollback remain explicit.
 #
 # usage: tp4-gpu-clocks.sh --apply | --revert | --status
 # exit:  0 applied / reverted / status

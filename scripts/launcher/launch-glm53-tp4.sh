@@ -282,7 +282,7 @@ if [ "$MAX_MODEL_LEN" -gt 262144 ]; then
   LONGLEN_ENV="-e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1"
 fi
 
-# A/B W3: the proven DFlash2 flag set does not use --async-scheduling.
+# The current DFlash2 recipe leaves the optional async-scheduling flag disabled.
 ASYNCFLAG=""
 if [ "$ASYNC_SCHEDULING" = "1" ]; then
   ASYNCFLAG="--async-scheduling"

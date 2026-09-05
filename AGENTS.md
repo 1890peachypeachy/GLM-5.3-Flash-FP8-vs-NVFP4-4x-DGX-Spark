@@ -6,10 +6,9 @@ document for the requested task before substantive work:
 | Task | Required document |
 | --- | --- |
 | New hardware, first handoff, image or weight installation | [`docs/install-from-zero.md`](docs/install-from-zero.md) |
-| Status, deploy, start/stop, recovery, rollback or promotion | [`docs/operations.md`](docs/operations.md) |
+| Status, deploy, start/stop, recovery, rollback, functional gates or promotion | [`docs/operations.md`](docs/operations.md) |
 | Cabling, addressing, MTU, RoCE, HCA/GID or NCCL failure | [`docs/fabric.md`](docs/fabric.md) |
 | Current model, image, scheduler, patches or host recipe | [`docs/production-recipe.md`](docs/production-recipe.md) |
-| Acceptance, performance measurement or public reference results | [`docs/bench.md`](docs/bench.md) |
 | Local code or documentation only | relevant row above, then `CHANGELOG.md` and `./scripts/check.sh`; do not probe the cluster automatically |
 
 ## Sources of truth
@@ -35,7 +34,7 @@ authorization boundaries:
   already placed in scope.
 - Confirm that the current authorization already covers privileged bootstrap or
   downloads; host network changes or reboots; deploy or start/stop/poweroff; and
-  benchmarking or promotion. Ask only when the action or maintenance window is new.
+  promotion. Ask only when the action or maintenance window is new.
   One maintenance window does not authorize the next.
 - Purges, commits, pushes, tags, pull requests, releases, and public announcements
   each require an explicit request. Never automate weight deletion.
@@ -58,10 +57,10 @@ mesh to all four nodes, including itself; protect those accounts as root-equival
   the next autostart recipe even before a restart.
 - `EXTRA_DOCKER_ENV` carries both the MoE config and scheduler mount. Edit only the
   intended entries; clearing it leaves the selected scheduler unimportable.
-- After any changed boot, run the sanity and tool-call gates in `docs/bench.md` within
+- After any changed boot, run the coherent-response and tool-call gates in
+  `docs/operations.md` within
   two minutes of `/health` 200. On failure, stop the stack and report.
-- Benchmark only an idle endpoint. Foreign requests invalidate the pass. Never spawn
-  cluster-served subagents while the stack is down or a benchmark is running.
+- Never spawn cluster-served subagents while the stack is down.
 - If a rank is missing, two stacks exist, health is inconsistent, or a prerequisite
   differs from the requested recipe, stop and report instead of repairing by guess.
 
@@ -74,12 +73,10 @@ When the owner explicitly authorizes a release, rename `Unreleased` to that vers
 and actual date, then open a new empty `Unreleased` section. Do not version, commit,
 or publish automatically.
 
-Run `./scripts/check.sh` before handoff. Any recipe change that may affect performance
-enters the repository only together with new verified benchmarks and an updated public
-benchmark table in `README.md`. Also update any relevant `cluster.env.example`
-rollback and the appropriate boot signature in `docs/operations.md`. Purely editorial
-changes are exempt from the benchmark requirement, but still require a changelog entry
-and the offline check.
+Run `./scripts/check.sh` before handoff. For any recipe change, also update the relevant
+`cluster.env.example` rollback and the appropriate boot signature in
+`docs/operations.md`. Purely editorial changes still require a changelog entry and the
+offline check.
 
 Do not introduce or use GitHub Actions or workflow files in this repository. Run the
 required validation locally with `./scripts/check.sh`.

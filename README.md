@@ -12,32 +12,10 @@ settings.
 **Configured context window: 256K (262,144 tokens).** See `MAX_MODEL_LEN` in
 [`cluster.env.example`](cluster.env.example).
 
-## Benchmark results
-
-<div align="center">
-
-| Benchmark | Baseline (tok/s) | Current (tok/s) | Improvement |
-| --- | ---: | ---: | ---: |
-| Decode — prose | 34.3 | 42.7 | +24.5% |
-| Decode — code | 35.5 | 45.1 | +27.0% |
-| Decode — structured | 50.2 | 72.5 | +44.4% |
-| Decode — 4 streams, aggregate | 126.8 | 201.9 | +59.2% |
-| Prefill ~30K | 1907.6 | 2195.1 | +15.1% |
-| Prefill ~100K | 2085.2 | 2213.7 | +6.2% |
-
-</div>
-
-Current values describe the repository recipe on four ASUS GX10 nodes. The baseline
-is the fixed initial-campaign configuration and does not roll forward. This is a
-historical comparison between configurations; see
-[`docs/bench.md`](docs/bench.md) for the protocol, secondary metrics, and limits.
-
 ## Assumptions
 
 GLM-5.3-Flash is my daily driver for heavy coding workloads and extensive parallel
-subagent use. This repository optimizes the deployment for those workloads, with
-output quality as a non-negotiable requirement. Optimizations must also preserve
-prefill throughput and the quality and speed of prose generation.
+subagent use. This repository configures the deployment for those workloads.
 
 ## Hardware
 
@@ -129,10 +107,9 @@ GLM-5.3-Flash reasoning mode. The official request values remain `low`, `high`, 
 | Need | Read |
 | --- | --- |
 | Install from OS + driver + Docker, including image and weights | [`docs/install-from-zero.md`](docs/install-from-zero.md) |
-| Inspect, deploy, start, stop, recover, roll back, or promote | [`docs/operations.md`](docs/operations.md) |
+| Inspect, deploy, start, stop, recover, roll back, run functional gates, or promote | [`docs/operations.md`](docs/operations.md) |
 | Cable, address, verify, or diagnose the RoCE ring and patched NCCL | [`docs/fabric.md`](docs/fabric.md) |
 | Understand the current runtime recipe and its customizations | [`docs/production-recipe.md`](docs/production-recipe.md) |
-| Run acceptance gates or reproducible benchmarks; read public results | [`docs/bench.md`](docs/bench.md) |
 | Understand files copied to the nodes | [`scripts/node/README.md`](scripts/node/README.md) |
 | Rebuild and install the patched NCCL library | [`scripts/node/nccl/README.md`](scripts/node/nccl/README.md) |
 

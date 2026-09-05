@@ -7,7 +7,7 @@ select the files explicitly.
 
 | Path | Purpose |
 | --- | --- |
-| `bootstrap/` | measured host/package pins consumed by bootstrap and verification |
+| `bootstrap/` | pinned host/package versions consumed by bootstrap and verification |
 | `etc/` | templates and shared netplan, sysctl, sudoers, iptables, systemd, and GRUB material |
 | `host/` | idempotent host controls for IOMMU and GPU clocks |
 | `model-manifests/` | immutable filename, size, and SHA-256 manifests for supported model snapshots |

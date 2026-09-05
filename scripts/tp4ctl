@@ -488,8 +488,8 @@ cmd_health() {
 # ----------------------------------------------------------------- main
 
 [ $# -ge 1 ] || { usage >&2; exit 2; }
-# A bench overlay (TP4_NO_SERVE=1) never serves: it swaps the entrypoint and exits on its
-# own, so `up`/`restart` would leave the cluster with no endpoint and no autostart parity.
+# A non-serving overlay (TP4_NO_SERVE=1) swaps the entrypoint and exits on its own, so
+# `up`/`restart` would leave the cluster with no endpoint and no autostart parity.
 case "${1:-}:${TP4_NO_SERVE:-0}" in
   up:1|restart:1) die "this overlay has TP4_NO_SERVE=1 and cannot be started with tp4ctl up/restart" ;;
 esac

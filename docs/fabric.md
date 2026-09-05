@@ -106,11 +106,12 @@ preserved in [`CREDITS.md`](../CREDITS.md).
 
 | Symptom | Check | Action |
 | --- | --- | --- |
-| Decode falls to roughly one third without a clear log error | `./scripts/tp4ctl fabric-check`; look for MTU 1500 or a missing port | Keep TP4 down, restore the generated network configuration in a full approved window |
+| Responses slow down after a fabric change without a clear log error | `./scripts/tp4ctl fabric-check`; look for MTU 1500 or a missing port | Keep TP4 down, restore the generated network configuration in a full approved window |
 | NCCL initialization hangs or times out | Verify all eight jumbo pings, selected HCA/GID, library SHA, and `NCCL_ALGO=Ring` | Fix the first failed prerequisite; never bypass fabric-check |
 | One node shows four addressed fabric interfaces | Compare with the generated netplan and selected HCAs | Remove duplicate PCIe views from addressing/HCA selection through `cluster.env`, re-render, and review before activation |
 | Link is UP but the peer is wrong | Compare cable serials at both ends | Correct the physical cable map before changing addresses |
 | Wrong-but-present NCCL library | Compare every node to `scripts/node/nccl/SHA256SUMS` | Re-run the atomic installer, then perform an approved full restart and gates |
 
 After any repair, require the static verifier, fabric-check, a full-cluster boot, the
-acceptance gates, and a representative decode measurement before declaring recovery.
+[post-boot functional gates](operations.md#post-boot-functional-gates), and all four
+runtime signatures before declaring recovery.

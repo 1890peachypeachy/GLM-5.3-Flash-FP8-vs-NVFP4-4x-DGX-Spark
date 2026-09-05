@@ -61,7 +61,7 @@ set -euo pipefail
 # are what must not drift. For sudoers, `#include` / `#includedir` are directives, not comments,
 # and are kept in the comparison.
 #
-# Exit codes (prof-capture.sh convention): 0 every item PASS, 1 FAIL or TODO items remain,
+# Exit codes: 0 every item PASS, 1 FAIL or TODO items remain,
 # 2 usage, 3 precondition missing on the workstation (e.g. no per-node netplan file). An
 # unfilled cluster.env exits 1: that check belongs to scripts/lib/common.sh, which is shared.
 

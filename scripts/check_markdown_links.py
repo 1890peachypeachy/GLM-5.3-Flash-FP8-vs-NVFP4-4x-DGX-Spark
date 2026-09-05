@@ -13,14 +13,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SKIP_DIRS = {
     ".git",
     ".claude",
-    "bench-results",
-    "experiments",
-    "reports",
-    "todo",
-}
-SKIP_PREFIXES = {
-    Path("scripts/node/moe-tune"),
-    Path("scripts/node/nccl-bench"),
 }
 LINK_RE = re.compile(r"!?\[[^\]]*\]\((<[^>]+>|[^\s)]+)(?:\s+[^)]*)?\)")
 HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$")
@@ -32,7 +24,7 @@ def is_public(path: Path) -> bool:
     rel = path.relative_to(ROOT)
     if any(part in SKIP_DIRS for part in rel.parts):
         return False
-    return not any(rel == prefix or prefix in rel.parents for prefix in SKIP_PREFIXES)
+    return True
 
 
 def markdown_files() -> list[Path]:

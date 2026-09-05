@@ -28,8 +28,8 @@ $USAGE
 
 Managed files: cluster.env, scripts/launcher/launch-glm53-tp4.sh, scripts/tp4ctl, the flusher,
 model fetch/helper/manifests, the indexer patch, scripts/node/patches/*.py (minus tests),
-scripts/node/moe-configs/*.json, and the TP4_ENV overlay when set. Optional operator-only
-benchmark/tuner assets are copied only when present. Host assets: scripts/deploy-host.sh.
+scripts/node/moe-configs/*.json, and the TP4_ENV overlay when set. Host assets:
+scripts/deploy-host.sh.
 EOF
 }
 # --help must work in a checkout that has no cluster.env yet.
@@ -112,7 +112,7 @@ for f in "$REPO"/scripts/node/patches/*.py; do
   patch_count=$((patch_count + 1))
 done
 
-# The experiment overlay travels next to cluster.env, at the same relative path.
+# The configuration overlay travels next to cluster.env, at the same relative path.
 if [ -n "${TP4_ENV:-}" ]; then
   FILES+=("$TP4_ENV:tp4/$TP4_ENV")
   # The overlay is sourced by bash on the node: syntax-check it here, not at `up` time.
@@ -133,49 +133,12 @@ if [ -d "$REPO/scripts/node/moe-configs" ]; then
   [ "$moe_count" -eq 0 ] || REMOTE_DIRS+=(tp4/moe-configs)
 fi
 
-# Optional NCCL microbenchmark assets, when the local directory carries any.
-# Explicit list, not a bare glob: only the runtime assets belong on the nodes. README.md,
-# editor leftovers and __pycache__/ stay in the repo.
-nccl_count=0
-if [ -f "$REPO/scripts/node/nccl-bench/entry.sh" ]; then
-  FILES+=("scripts/node/nccl-bench/entry.sh:tp4/nccl-bench/entry.sh")
-  nccl_count=$((nccl_count + 1))
-  # entry.sh is the container entrypoint: it must be executable and syntax-valid.
-  EXECUTABLES="$EXECUTABLES tp4/nccl-bench/entry.sh"
-  SHELL_SCRIPTS="$SHELL_SCRIPTS tp4/nccl-bench/entry.sh"
-fi
-for f in "$REPO"/scripts/node/nccl-bench/*.py; do
-  [ -f "$f" ] || continue
-  FILES+=("scripts/node/nccl-bench/${f##*/}:tp4/nccl-bench/${f##*/}")
-  nccl_count=$((nccl_count + 1))
-done
-[ "$nccl_count" -eq 0 ] || REMOTE_DIRS+=(tp4/nccl-bench)
-
-# Optional fused-MoE tuning driver. Explicit list, not a glob: only the
-# three files the node actually runs. vendor/benchmark_moe.py is the verbatim upstream reference
-# and stays on the workstation, like README.md and __pycache__/.
-moetune_count=0
-for f in run-tune.sh benchmark_moe_noray.py merge-configs.py; do
-  [ -f "$REPO/scripts/node/moe-tune/$f" ] || continue
-  FILES+=("scripts/node/moe-tune/$f:tp4/moe-tune/$f")
-  moetune_count=$((moetune_count + 1))
-done
-if [ "$moetune_count" -gt 0 ]; then
-  REMOTE_DIRS+=(tp4/moe-tune)
-  if [ -f "$REPO/scripts/node/moe-tune/run-tune.sh" ]; then
-    # The driver is launched by hand on the node: executable and syntax-valid.
-    EXECUTABLES="$EXECUTABLES tp4/moe-tune/run-tune.sh"
-    SHELL_SCRIPTS="$SHELL_SCRIPTS tp4/moe-tune/run-tune.sh"
-  fi
-fi
-
 sha_of() { shasum -a 256 "$1" | awk '{print $1}'; }
 
 # Nothing is copied before the whole list is known-good: a source that disappeared would
 # otherwise abort the run mid-node (sha_of on a missing file, `set -o pipefail`), and a
-# .py with a syntax error would reach the container. This covers EVERY .py that travels:
-# public scripts/node/patches/, optional scripts/node/nccl-bench/ and
-# scripts/node/moe-tune/, and the indexer patch.
+# .py with a syntax error would reach the container. This covers every Python file that
+# travels: scripts/node/patches/ and the indexer patch.
 for entry in "${FILES[@]}"; do
   src=${entry%%:*}
   [ -f "$REPO/$src" ] || { warn "source missing, refusing to run: $REPO/$src"; exit 1; }
@@ -301,13 +264,6 @@ if [ "$moe_count" -gt 0 ]; then
 else
   log "moe-configs: none in scripts/node/moe-configs (nothing pushed)"
 fi
-if [ "$nccl_count" -gt 0 ]; then
-  log "nccl-bench: $nccl_count file(s) -> ~/tp4/nccl-bench/"
-fi
-if [ "$moetune_count" -gt 0 ]; then
-  log "moe-tune: $moetune_count file(s) -> ~/tp4/moe-tune/ (vendor/benchmark_moe.py is reference only)"
-fi
-
 if [ $rc -eq 0 ]; then
   log "deploy completed on every node"
 else
