@@ -69,7 +69,7 @@ scripts/node/nccl/install-nccl.sh --help >/dev/null
 echo "command-help: PASS"
 
 doc_count=$(find docs -type f -name '*.md' | wc -l | tr -d ' ')
-[ "$doc_count" = 4 ] || { echo "check: docs/ must contain exactly 4 Markdown files (got $doc_count)" >&2; exit 1; }
+[ "$doc_count" = 6 ] || { echo "check: docs/ must contain exactly 6 Markdown files (got $doc_count)" >&2; exit 1; }
 
 ./scripts/tests/test-agent-preflight.sh
 ./scripts/tests/test-host-lifecycle.sh

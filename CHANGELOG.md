@@ -8,6 +8,35 @@ release.
 
 ### Added
 
+- Added `benchmarks/` with the four harnesses used for the FP8-vs-NVFP4
+  head-to-head (`agent_sim.py`, `grow_agent_probe.py`, `bench_sustained_decode.py`,
+  `glm_warmup.py`) and a README with the exact commands, A/B rules, and method
+  limitations, so the published results are reproducible from the checkout.
+- Added `docs/recipe-nvfp4.md`: the NVFP4 recipe as a runnable alternative lane
+  (weights, image, launch config, measured limitations) with the tonyd2wild
+  repository referenced as the deep engineering record.
+- Rewrote the README as a two-recipe entry point: what to download for each lane,
+  how to launch either, the measured FP8-vs-NVFP4 results, shared limitations, and
+  full attribution for both adapted recipes.
+- Extended `CREDITS.md` with the NVFP4 recipe source (tonyd2wild's four-node
+  repository) and the RedHatAI NVFP4 quant.
+
+### Fixed
+
+- Corrected `SPEC_EXTRA_JSON` in `cluster.env.example`: the switch-adaptation
+  release shipped it with escaped inner quotes that fail the launcher's JSON
+  validation (and the offline tests). The value now parses as the intended JSON
+  fragment.
+- Corrected the `FABRIC_TARGETS` template values to a consistent RFC 5737 ring
+  plan (last octet = node number = rank + 1, peers ordered by ascending link
+  index) so the upstream ring tooling (`render-netplan.sh`) validates them even
+  though a switched deployment does not use it.
+- Updated the launcher fallback expectations in the offline tests to the
+  switch-adapted single-HCA values (`rocep1s0f1`, fabric iface for management)
+  instead of the upstream two-port ASUS values.
+
+### Changed
+
 - Documented the workload priorities and the quality, prefill-throughput, and prose
   non-regression requirements.
 - Added a README badge linking to the maintainer's X profile.

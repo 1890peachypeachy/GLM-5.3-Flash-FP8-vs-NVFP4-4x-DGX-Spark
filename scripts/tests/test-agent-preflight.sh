@@ -140,9 +140,9 @@ NCCL_IB_GID_INDEX_BY_RANK=()
 NETPLAN_RENDERER_BY_RANK=()
 ENV
 TP4_DRY_RUN=1 bash "$TMPD/launcher/launch-glm53-tp4.sh" 0 >"$TMPD/launch-asus.txt"
-grep -q 'NCCL_IB_HCA=rocep1s0f0,rocep1s0f1' "$TMPD/launch-asus.txt"
+grep -q 'NCCL_IB_HCA=rocep1s0f1' "$TMPD/launch-asus.txt"
 grep -q 'NCCL_IB_GID_INDEX=3' "$TMPD/launch-asus.txt"
-grep -q 'NCCL_SOCKET_IFNAME=enP7s7' "$TMPD/launch-asus.txt"
+grep -q 'NCCL_SOCKET_IFNAME=enp1s0f1np1' "$TMPD/launch-asus.txt"
 
 # The repository layout uses cluster.env two levels above scripts/launcher; the deployed
 # layout above keeps the launcher and config adjacent. Both must resolve the same recipe.
@@ -150,7 +150,7 @@ mkdir -p "$TMPD/checkout/scripts/launcher"
 cp "$REPO/scripts/launcher/launch-glm53-tp4.sh" "$TMPD/checkout/scripts/launcher/launch-glm53-tp4.sh"
 cp "$TMPD/launcher/cluster.env" "$TMPD/checkout/cluster.env"
 TP4_DRY_RUN=1 bash "$TMPD/checkout/scripts/launcher/launch-glm53-tp4.sh" 0 >"$TMPD/launch-checkout.txt"
-grep -q 'NCCL_SOCKET_IFNAME=enP7s7' "$TMPD/launch-checkout.txt"
+grep -q 'NCCL_SOCKET_IFNAME=enp1s0f1np1' "$TMPD/launch-checkout.txt"
 
 # The controller likewise supports repository-root config and its deployed adjacent
 # config. An unknown command exits after config resolution without contacting a node.

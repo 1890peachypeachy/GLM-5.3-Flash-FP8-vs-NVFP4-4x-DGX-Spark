@@ -12,7 +12,8 @@ retain their own terms. Verify upstream terms before redistribution or commercia
 | [vLLM](https://github.com/vllm-project/vllm) | Serving engine. `scripts/node/sparse_attn_indexer_kpool_sm121.py` and `scripts/node/patches/adaptive_k_scheduler.py` are Apache-2.0-derived files with SPDX and provenance headers. |
 | [NVIDIA NCCL](https://github.com/NVIDIA/nccl) | The vendored patch modifies NCCL v2.30.7-1 sources; resulting binaries retain NCCL's BSD-3-Clause terms. No NCCL source tree or binary is redistributed here. |
 | [josephdrose/nccl-spark-switchless](https://github.com/josephdrose/nccl-spark-switchless) | Source of the vendored switchless overlay. No upstream license file or repository license metadata was found when checked on 2026-09-04. Attribution does not resolve that uncertainty; ask the author before redistributing a derivative. |
-| [tonyd2wild](https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark) | Provider of the referenced SM121 vLLM container image and DFlash2 patch chain. The image is pulled, not redistributed, and keeps its upstream component terms. |
+| [tonyd2wild](https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-DFlash2-2x-DGX-Spark) | Provider of the referenced SM121 vLLM container image and DFlash2 patch chain. The image is pulled, not redistributed, and keeps its upstream component terms. The NVFP4 recipe in [`docs/recipe-nvfp4.md`](docs/recipe-nvfp4.md) adapts his 4-node recipe [tonyd2wild/GLM-5.3-Flash-NVFP4-1M-KV-4x-DGX-Spark](https://github.com/tonyd2wild/GLM-5.3-Flash-NVFP4-1M-KV-4x-DGX-Spark), which is also the deep engineering record for that lane. |
+| [RedHatAI](https://huggingface.co/RedHatAI/GLM-5.3-Flash-NVFP4) | NVFP4 quant of GLM-5.3-Flash (compressed-tensors). Referenced and fetched, not redistributed; used by the NVFP4 recipe. |
 
 The four-node FP8 lane descends from
 [Wpnx330/GLM-5.3-Flash-FP8-4x-DGX-Spark](https://github.com/Wpnx330/GLM-5.3-Flash-FP8-4x-DGX-Spark).
