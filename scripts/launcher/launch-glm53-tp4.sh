@@ -191,8 +191,11 @@ NCCL_IB_HCA=$(resolve_rank_value "$RANK" NCCL_IB_HCA NCCL_IB_HCA_BY_RANK rocep1s
 NCCL_IB_GID_INDEX=$(resolve_rank_value "$RANK" NCCL_IB_GID_INDEX NCCL_IB_GID_INDEX_BY_RANK 3)
 [[ "$MGMT_IF" =~ ^[A-Za-z0-9_.:-]+$ ]] \
   || { echo "[launch] ERROR: rank $RANK MGMT_IF is not a simple interface name" >&2; exit 1; }
-[[ "$NCCL_IB_HCA" =~ ^[A-Za-z0-9_.:-]+(,[A-Za-z0-9_.:-]+)+$ ]] \
-  || { echo "[launch] ERROR: rank $RANK NCCL_IB_HCA must name at least two comma-separated HCAs" >&2; exit 1; }
+# SWITCH-ADAPTED (Scope A): our CRS504 switch has ONE fabric RoCE link per node
+# (rocep1s0f1). Accept a single HCA; the second active port (roceP2p1s0f1) is on the
+# LAN (192.168.0.x), not the 10.73.0.x fabric, so it must NOT join NCCL_IB_HCA.
+[[ "$NCCL_IB_HCA" =~ ^[A-Za-z0-9_.:-]+(,[A-Za-z0-9_.:-]+)*$ ]] \
+  || { echo "[launch] ERROR: rank $RANK NCCL_IB_HCA is malformed (single or comma-separated HCAs expected)" >&2; exit 1; }
 case "$NCCL_IB_GID_INDEX" in ''|*[!0-9]*)
   echo "[launch] ERROR: rank $RANK NCCL_IB_GID_INDEX must be a non-negative integer" >&2; exit 1 ;;
 esac
