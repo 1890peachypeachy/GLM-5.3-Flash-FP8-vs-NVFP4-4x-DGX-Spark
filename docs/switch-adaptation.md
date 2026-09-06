@@ -87,12 +87,16 @@ right after boot will look ~5× slow (JIT pollution); re-run warm before judging
 
 ## 4. Benchmark results — FP8 vs NVFP4 (apples-to-apples)
 
-Harness: `spark-bench/scripts/grow_agent_probe.py`
+Harness: `benchmarks/grow_agent_probe.py` (vendored in this repo)
 (`--max-ctx 400000 --doc-step 30000 --thinking low`, growing 32K→416K by +30K/turn).
 Both lanes warm, same endpoint/model name. NVFP4 = RedHat W4A4 conversion, marlin,
 DFlash2 k=3. FP8 = zai-org native QAT, Triton MoE, adaptive-k 3-5.
 
 ### Wall-clock (decode+prefill combined latency)
+All runs at **thinking-low** (`enable_thinking: true, reasoning_effort: "low"`) —
+the agent regime; reasoning tokens are not accelerated by spec decode. Exact
+request shape: [`benchmarks/README.md`](../benchmarks/README.md).
+
 | Run | NVFP4 | FP8 | Winner |
 | --- | --- | --- | --- |
 | C1 (1 agent) | 50.4 s | **44.1 s** | FP8 ~1.14× |

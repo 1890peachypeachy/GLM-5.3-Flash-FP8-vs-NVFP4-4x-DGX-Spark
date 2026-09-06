@@ -18,6 +18,10 @@ release.
 - Rewrote the README as a two-recipe entry point: what to download for each lane,
   how to launch either, the measured FP8-vs-NVFP4 results, shared limitations, and
   full attribution for both adapted recipes.
+- Documented the exact benchmark request shape (thinking-low, temperature, output
+  sizes, context growth, concurrency, streaming) in `benchmarks/README.md` and
+  pointed the results section at the vendored harnesses instead of the private
+  benchmark repository.
 - Extended `CREDITS.md` with the NVFP4 recipe source (tonyd2wild's four-node
   repository) and the RedHatAI NVFP4 quant.
 

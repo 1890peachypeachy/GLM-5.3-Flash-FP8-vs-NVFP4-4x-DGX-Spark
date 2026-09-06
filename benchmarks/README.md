@@ -7,8 +7,13 @@ when several agents work on it. These scripts mimic our real agent workload:
 
 - **agents run tool-call loops that grow context turn over turn** (read a doc →
   tool result appends → next instruction), climbing from ~32K toward ~416K tokens;
-- **thinking-low** is the agent regime (reasoning is on and is NOT accelerated by
-  speculative decoding — a clean-decode benchmark hides this);
+- **thinking-low is the agent regime and is what every published number uses**:
+  `--thinking low` sends `chat_template_kwargs: {enable_thinking: true,
+  reasoning_effort: "low"}` on every request. This matters: reasoning tokens are
+  NOT accelerated by speculative decoding, so thinking-low numbers are much
+  slower than clean-decode numbers — benchmarking with thinking off would flatter
+  any lane. All four scripts accept `--thinking low|off` (low is the default
+  everywhere except `glm_warmup.py`, which warms the thinking-off path);
 - **1, 3, and 4 concurrent agents** are the shapes that matter;
 - **the lane must be warm** — a first run after boot is JIT-polluted (see
   [Limitations](#limitations) below) and will lie to you by ~5x.
@@ -65,6 +70,19 @@ A/B rules we hold ourselves to:
    nearly mislabeled FP8 prefill; the stall was kernel JIT, not the config.
 4. Quote the workload with every number. Single-stream tok/s is a statement
    about the prompt, not the engine (draft acceptance is content-driven).
+
+## Exact request shape (what "how we ran it" means)
+
+Every published number was measured with, per request:
+
+| Parameter | Value |
+| --- | --- |
+| Thinking | **low** — `chat_template_kwargs: {enable_thinking: true, reasoning_effort: "low", clear_thinking: true}` |
+| Temperature | 0.0 (growing-context probes) / 0.7 (sustained-decode bench) |
+| Output size | 400 max_tokens per agent turn (grow_agent_probe) · 2000-2500 (sustained decode) · 260-400 per output type (agent_sim output mix) |
+| Context growth | 32K start, +30K tokens of injected tool-result per turn, to 416K max |
+| Concurrency | 1, 3, 4 agents — distinct contexts per agent |
+| Streaming | on, with `stream_options: {include_usage: true}` (TTFT from first content token) |
 
 ## Limitations
 
