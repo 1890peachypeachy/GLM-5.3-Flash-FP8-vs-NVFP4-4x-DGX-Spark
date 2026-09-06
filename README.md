@@ -148,13 +148,13 @@ draft acceptance (mean accept 3.4-4.0 of k=5) under load; NVFP4's draft cratered
 
 ## Credits
 
-This fork adapts two community recipes onto our switched-fabric fleet; the heavy
+This repository adapts two community recipes onto our switched-fabric fleet; the heavy
 lifting belongs to them:
 
 - **FP8 lane:** [jnardiello/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless](https://github.com/jnardiello/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless)
   — the entire runtime recipe (Triton FP8 MoE + GB10 JSON, adaptive-k scheduler,
-  DFlash2 integration, FP8 KV, switchless ring architecture). Our fork changes only
-  the network layer for a switched RoCE fabric ([`docs/switch-adaptation.md`](docs/switch-adaptation.md)).
+  DFlash2 integration, FP8 KV, switchless ring architecture). Our changes adapt
+  the network layer to a switched RoCE fabric ([`docs/switch-adaptation.md`](docs/switch-adaptation.md)).
   jnardiello's lane descends from [Wpnx330/GLM-5.3-Flash-FP8-4x-DGX-Spark](https://github.com/Wpnx330/GLM-5.3-Flash-FP8-4x-DGX-Spark),
   informed by [alexellis's four-node recipe](https://github.com/alexellis/glm-5.3-flash-4x-dgx-spark-switchless)
   and [jspark3](https://github.com/jakejharris/jspark3) (acceptance instrumentation).

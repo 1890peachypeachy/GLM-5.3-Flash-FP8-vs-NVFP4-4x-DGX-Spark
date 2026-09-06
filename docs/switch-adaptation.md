@@ -1,7 +1,8 @@
 # Switch-Adapted FP8 Deployment (Scope A) — deployment + benchmark notes
 
-**Fork:** `1890peachypeachy/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless`
-**Upstream:** `jnardiello/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless`
+**Fork history:** adapted from `jnardiello/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless`
+(this repository was originally the fork `1890peachypeachy/GLM-5.3-Flash-FP8-4-DGX-Spark-Switchless`,
+renamed 2026-09-06 when it became the consolidated FP8-vs-NVFP4 home)
 **Date:** 2026-09-06 · **Status:** verified live + benchmarked
 
 This doc records how this fork deploys jnardiello's GLM-5.3-Flash FP8 (zai-org) stack
